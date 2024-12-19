@@ -7,15 +7,15 @@
 //! # Example
 //! ```
 //! use faro_sharding::shard_for;
-//! for locations in 4..51 {
-//!   assert_eq!(shard_for("foo", locations), 3);
+//! for locations in 4..50 {
+//!   assert_eq!(shard_for("foo", locations), 2);
 //! }
-//! assert_eq!(shard_for("foo", 51), 50);
+//! assert_eq!(shard_for("foo", 50), 49);
 //! ```
 //!
 //! # Distribution
 //!
-//! Faro Sharding shows high quality even distribution among locations. With 1,000,000 keys and 100 locations, the largest has 10332 keys (1.03%) and the smallest has 9854 keys (0.99%).
+//! Faro Sharding shows high quality even distribution among locations. With 1,000,000 keys and 100 locations, the largest has 10229 keys (1.02%) and the smallest has 9761 keys (0.98%).
 //!
 //! If you want to evaluate the distribution with your own hashing function, you can modify `examples/distribution.rs` to use your hasher.
 //!
@@ -68,9 +68,9 @@ pub fn shard_with_hasher(
 
     assert_ne!(total_destinations, 0, "total_destinations must be > 0");
 
-    for n in 2..total_destinations {
+    for n in 1..total_destinations {
         let hash = hasher.hash_one(last_hash);
-        if hash % n == 0 {
+        if hash % (n + 1) == 0 {
             final_shard = n;
         }
         last_hash = hash;
@@ -115,11 +115,11 @@ mod tests {
     fn pinning_default_shard() {
         // It is critical that the default `shard_for` implementation always returns the same shards for correctness of our user's systems. Do not remove or change the values here. Adding new entries is ok.
         let shards = maplit::btreemap! {
-            "foo" => 50,
-            "bar" => 15,
-            "baz" => 10,
-            "qux" => 61,
-            "quux" => 70,
+            "foo" => 49,
+            "bar" => 14,
+            "baz" => 9,
+            "qux" => 60,
+            "quux" => 69,
         };
 
         for (key, expected_shard) in shards {
@@ -128,6 +128,20 @@ mod tests {
                 expected_shard,
                 "Incorrect shard for {key}"
             );
+        }
+    }
+
+    #[test]
+    fn distributes_to_every_shard() {
+        let locations = 16;
+
+        let mut shard_counts = std::collections::HashMap::<_, u64>::new();
+        for i in 0..1000 {
+            *shard_counts.entry(shard_for(i, locations)).or_default() += 1;
+        }
+
+        for l in 0..locations {
+            assert!(shard_counts.contains_key(&l), "No entries for shard {l}");
         }
     }
 }

@@ -1,6 +1,6 @@
 [package]
 name = "faro_sharding"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 authors = ["Shelby Doolittle <shelby@shelbyd.com>"]
 description = "Non-shuffling sharding algorithm."

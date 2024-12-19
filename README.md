@@ -7,15 +7,15 @@ For example, if we have data sharded among 10 servers, when we add an 11th, we d
 ## Example
 ```rust
 use faro_sharding::shard_for;
-for locations in 4..51 {
-  assert_eq!(shard_for("foo", locations), 3);
+for locations in 4..50 {
+  assert_eq!(shard_for("foo", locations), 2);
 }
-assert_eq!(shard_for("foo", 51), 50);
+assert_eq!(shard_for("foo", 50), 49);
 ```
 
 ## Distribution
 
-Faro Sharding shows high quality even distribution among locations. With 1,000,000 keys and 100 locations, the largest has 10332 keys (1.03%) and the smallest has 9854 keys (0.99%).
+Faro Sharding shows high quality even distribution among locations. With 1,000,000 keys and 100 locations, the largest has 10229 keys (1.02%) and the smallest has 9761 keys (0.98%).
 
 If you want to evaluate the distribution with your own hashing function, you can modify `examples/distribution.rs` to use your hasher.
 
