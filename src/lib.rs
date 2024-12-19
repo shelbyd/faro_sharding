@@ -23,12 +23,13 @@ use std::hash::*;
 
 #[cfg(feature = "seahash")]
 mod with_seahash {
+    use crate::shard_with_hasher;
     use seahash::*;
     use std::hash::*;
 
     /// [shard_with_hasher] using [SeaHasher].
     pub fn shard_for(key: impl Hash, total_destinations: u64) -> u64 {
-        crate::shard_with_hasher(key, total_destinations, &BuildSeaHasher)
+        shard_with_hasher(key, total_destinations, &BuildSeaHasher)
     }
 
     struct BuildSeaHasher;
