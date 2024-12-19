@@ -1,0 +1,21 @@
+[package]
+name = "faro_sharding"
+version = "0.1.0"
+edition = "2021"
+authors = ["Shelby Doolittle <shelby@shelbyd.com>"]
+description = "Non-shuffling sharding algorithm."
+homepage = "https://github.com/shelbyd/faro_sharding"
+repository = "https://github.com/shelbyd/faro_sharding"
+documentation = "https://docs.rs/faro_sharding"
+
+[dependencies]
+seahash = { version = "4.1.0", optional = true }
+
+[dev-dependencies]
+maplit = "1.0.2"
+proptest = "1.6.0"
+structopt = "0.3.26"
+
+[features]
+default = ["seahash"]
+seahash = ["dep:seahash"]
